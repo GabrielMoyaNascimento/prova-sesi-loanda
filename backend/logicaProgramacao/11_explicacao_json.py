@@ -11,12 +11,21 @@
 
 # Agora, imagine o JSON como o cardápio de um restaurante:
 
+# [{
+#   "nome_do_prato": "X-Burger Especial",
+#   "preco": 25.50,
+#   "ingredientes": ["Pão", "Hambúrguer", "Queijo", "Alface"],
+#   "serve_duas_pessoas": false
+# },
+
 # {
 #   "nome_do_prato": "X-Burger Especial",
 #   "preco": 25.50,
 #   "ingredientes": ["Pão", "Hambúrguer", "Queijo", "Alface"],
 #   "serve_duas_pessoas": false
-# }
+# },
+
+# ]
 # A diferença é clara! No cardápio, cada informação tem uma "etiqueta" (que chamamos de chave) que descreve o que ela é. É organizado, legível e cheio de detalhes. É essa organização que o JSON traz para os nossos programas.
 
 
@@ -56,7 +65,7 @@ inventario = []
 
 try:
     # 1. Tentamos abrir o arquivo para leitura ('r').
-    with open('loja.json', 'r', encoding='utf-8') as arquivo:
+    with open('loja.json', 'r') as arquivo:
         # 2. Se funcionar, carregamos seu conteúdo para a variável 'inventario'.
         inventario = json.load(arquivo)
     print("✔️ Inventário existente carregado com sucesso!")
