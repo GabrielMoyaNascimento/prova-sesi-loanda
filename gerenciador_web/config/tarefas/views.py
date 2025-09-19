@@ -1,18 +1,16 @@
 from django.shortcuts import render
 from .models import Tarefa 
-from django.http import HttpResponse 
 
- 
-# Nossa primeira view! 
+
 def listar_tarefas(request): 
-    # Usamos o Model 'Tarefa' para buscar todos os objetos no banco 
+    # 1. A busca no banco de dados continua a mesma 
     tarefas_salvas = Tarefa.objects.all() 
-    
-    # O print abaixo é para vermos no terminal que a busca funcionou 
-    print(tarefas_salvas)
-
-    # Por enquanto, não vamos renderizar um template, 
-    # apenas retornaremos uma resposta simples
-    return HttpResponse("View 'listar_tarefas' foi executada! Verifique o terminal para ver os dados.") 
  
-    
+    # 2. Criamos um "dicionário de contexto" para enviar os dados ao template. 
+    # A chave 'minhas_tarefas' será a variável que usaremos no HTML. 
+    contexto = { 
+        'minhas_tarefas': tarefas_salvas 
+    } 
+ 
+    # 3. Renderizamos o template, passando a requisição e o contexto com os dados. 
+    return render(request, 'tarefas/lista.html', contexto) 
