@@ -1,0 +1,25 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <title>Projeto: {{ projeto.nome }}</title> 
+</head> 
+<body> 
+    <h1>{{ projeto.nome }}</h1> 
+    <p>{{ projeto.descricao }}</p> 
+    <hr> 
+    <h3>Tarefas deste Projeto:</h3> 
+ 
+    {% if tarefas %} 
+        <ul> 
+            {% for tarefa in tarefas %} 
+                <li>{{ tarefa.titulo }} - {% if tarefa.concluida %}Concluída{% else %}Pendente{% endif %}</li> 
+            {% endfor %} 
+        </ul> 
+    {% else %} 
+        <p>Nenhuma tarefa associada a este projeto ainda.</p> 
+    {% endif %} 
+ 
+    <a href="{% url 'lista_tarefas' %}">Ver todas as tarefas</a> 
+</body> 
+</html> 

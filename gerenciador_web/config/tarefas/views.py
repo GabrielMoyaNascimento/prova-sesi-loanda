@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from gerenciador_web.config.projetos.models import Projeto
+from projetos.models import Projeto
 from .models import Tarefa 
 
 # Métodos HTTP:
@@ -34,7 +34,7 @@ def adicionar_tarefa(request):
  
     if request.method == 'POST': 
         titulo = request.POST.get('titulo') 
-        descricao = request.POST.GET('descricao') 
+        descricao = request.POST.get('descricao') 
         projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado 
  
         # Encontra a instância do projeto e a associa à nova tarefa 
