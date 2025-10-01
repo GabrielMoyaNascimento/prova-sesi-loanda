@@ -1,12 +1,13 @@
 from django.db import models
-
-# Create your models here.
+from projetos.models import Projeto # Importe o Model do outro app! 
+ 
 class Tarefa(models.Model): 
     titulo = models.CharField(max_length=200) 
     descricao = models.TextField(blank=True, null=True) 
     data_criacao = models.DateTimeField(auto_now_add=True) 
     concluida = models.BooleanField(default=False) 
+    # Cada tarefa estará ligada a um único projeto. 
+    projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, null=True, blank=True) 
  
-    # Isso ajuda a exibir um nome legível no admin do Django 
     def __str__(self): 
         return self.titulo 

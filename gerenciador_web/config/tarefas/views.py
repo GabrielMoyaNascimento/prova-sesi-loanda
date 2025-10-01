@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from gerenciador_web.config.projetos.models import Projeto
 from .models import Tarefa 
 
 # Métodos HTTP:
@@ -28,28 +29,63 @@ def detalhe_tarefa(request, tarefa_id):
     return render(request, 'tarefas/detalhe.html', {'tarefa': tarefa})
 
 def adicionar_tarefa(request): 
+    # Busca todos os projetos para popular o seletor no formulário 
+    projetos = Projeto.objects.all() 
+ 
     if request.method == 'POST': 
-        # Se o método for POST, o formulário foi enviado. 
         titulo = request.POST.get('titulo') 
-        descricao = request.POST.get('descricao') 
-        Tarefa.objects.create(titulo=titulo, descricao=descricao) 
-        # Redireciona para a lista de tarefas após salvar. 
+        descricao = request.POST.GET('descricao') 
+        projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado 
+ 
+        # Encontra a instância do projeto e a associa à nova tarefa 
+        projeto_selecionado = Projeto.objects.get(pk=projeto_id) 
+        Tarefa.objects.create(titulo=titulo, descricao=descricao, projeto=projeto_selecionado) 
+ 
         return redirect('lista_tarefas') 
  
-    return render(request, 'tarefas/form_tarefa.html') 
+    # Envia a lista de projetos para o template 
+    return render(request, 'tarefas/form_tarefa.html', {'projetos': projetos}) 
+ 
+# A lógica para alterar_tarefa seria similar, passando também a lista de projetos. 
 
-def alterar_tarefa(request, tarefa_id): 
-    tarefa = get_object_or_404(Tarefa, pk=tarefa_id) 
- 
-    if request.method == 'POST': 
-        tarefa.titulo = request.POST.get('titulo') 
-        tarefa.descricao = request.POST.get('descricao') 
-        tarefa.concluida = request.POST.get('concluida') == 'on' 
-        tarefa.save() # Salva as alterações no objeto existente. 
-        return redirect('lista_tarefas') 
- 
-    # No método GET, envia a tarefa para o template para preencher o formulário. 
-    return render(request, 'tarefas/form_tarefa.html', {'tarefa': tarefa}) 
+def alterar_tarefa(request, tarefa_id):
+    # 1. Busca a tarefa específica que será editada ou retorna um erro 404 se não existir.
+    tarefa = get_object_or_404(Tarefa, pk=tarefa_id)
+    
+    # 2. Busca todos os projetos para popular o campo de seleção no formulário.
+    #    Isso é necessário tanto para GET (exibir o form) quanto para POST (caso haja um erro de validação).
+    projetos = Projeto.objects.all()
+
+    if request.method == 'POST':
+        # 3. Pega os dados enviados pelo formulário.
+        titulo = request.POST.get('titulo')
+        descricao = request.POST.get('descricao')
+        projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado no <select>.
+        concluida = request.POST.get('concluida') == 'on' # Checkbox retorna 'on' se marcado.
+
+        # 4. Busca a instância do projeto selecionado no banco de dados.
+        projeto_selecionado = get_object_or_404(Projeto, pk=projeto_id)
+
+        # 5. Atualiza os campos do objeto 'tarefa' que já foi carregado do banco.
+        tarefa.titulo = titulo
+        tarefa.descricao = descricao
+        tarefa.projeto = projeto_selecionado # Associa a tarefa ao novo projeto.
+        tarefa.concluida = concluida
+        
+        # 6. Salva as alterações no banco de dados.
+        tarefa.save()
+        
+        # 7. Redireciona o usuário para a lista de tarefas após a alteração.
+        return redirect('lista_tarefas')
+
+    # 8. Se o método for GET (primeiro acesso à página de edição):
+    #    Renderiza o formulário, passando a tarefa para preencher os campos
+    #    e a lista de projetos para montar o seletor.
+    context = {
+        'tarefa': tarefa,
+        'projetos': projetos
+    }
+    return render(request, 'tarefas/form_tarefa.html', context)
 
 def excluir_tarefa(request, tarefa_id): 
     tarefa = get_object_or_404(Tarefa, pk=tarefa_id) 
