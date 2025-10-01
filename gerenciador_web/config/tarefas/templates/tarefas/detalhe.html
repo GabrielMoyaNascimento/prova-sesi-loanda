@@ -12,6 +12,8 @@
     <p><strong>Status:</strong> {% if tarefa.concluida %}Concluída{% else %}Pendente{% endif %}</p> 
     <small>Criada em: {{ tarefa.data_criacao }}</small> 
     <hr> 
+    <a href="{% url 'alterar_tarefa' tarefa.id %}">Alterar Tarefa</a> | 
+    <a href="{% url 'excluir_tarefa' tarefa.id %}">Excluir Tarefa</a> |
     <a href="{% url 'lista_tarefas' %}">Voltar para a lista</a> 
 </body> 
 </html> 

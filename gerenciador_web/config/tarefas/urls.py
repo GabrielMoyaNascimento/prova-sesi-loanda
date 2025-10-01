@@ -13,5 +13,9 @@ urlpatterns = [
     # ADICIONAR TAREFA
     path('adicionar/', views.adicionar_tarefa, name='adicionar_tarefa'),
 
-    
+    # ALTERAR TAREFA
+    path('<int:tarefa_id>/alterar/', views.alterar_tarefa, name='alterar_tarefa'),
+
+    # EXCLUIR TAREFA
+    path('<int:tarefa_id>/excluir/', views.excluir_tarefa, name='excluir_tarefa'), 
 ]
