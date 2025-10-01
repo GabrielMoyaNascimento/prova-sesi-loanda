@@ -134,8 +134,6 @@ with open('loja.json', 'w', encoding='utf-8') as arquivo:
 print(f"\n✅ Produto '{nome}' foi adicionado com sucesso ao inventário!")
 
 
-
-
 # O ID do produto que queremos modificar e o novo valor para a quantidade
 id_produto_para_modificar = 102
 nova_quantidade = 45
