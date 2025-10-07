@@ -135,12 +135,12 @@ print(f"\n✅ Produto '{nome}' foi adicionado com sucesso ao inventário!")
 
 
 # O ID do produto que queremos modificar e o novo valor para a quantidade
-id_produto_para_modificar = 102
+id_produto_para_modificar = 1
 nova_quantidade = 45
 
 # --- ETAPA 1: LER O ARQUIVO ---
 try:
-    with open('produtos.json', 'r', encoding='utf-8') as arquivo:
+    with open('loja.json', 'r') as arquivo:
         inventario = json.load(arquivo)
 except FileNotFoundError:
     print("Arquivo não encontrado. Nada para modificar.")
@@ -170,11 +170,9 @@ if not produto_encontrado:
     print(f"Produto com ID {id_produto_para_modificar} não foi encontrado.")
 else:
     # --- ETAPA 3: ESCREVER OS DADOS ATUALIZADOS NO ARQUIVO ---
-    with open('produtos.json', 'w', encoding='utf-8') as arquivo:
+    with open('produtos.json', 'w') as arquivo:
         json.dump(inventario, arquivo, indent=4)
     print("O arquivo 'produtos.json' foi atualizado com sucesso!")
-
-
 
 
 # O ID do produto que queremos excluir do nosso inventário
@@ -215,3 +213,27 @@ else:
         # Salvamos a nova lista (sem o item excluído) de volta no arquivo
         json.dump(novo_inventario, arquivo, indent=4)
     print("O arquivo 'produtos.json' foi atualizado com o item removido!")
+
+
+#  LISTAR - Exibindo o Inventário Atualizado de Forma Organizada
+try:
+    with open('loja.json', 'r', encoding='utf-8') as arquivo:
+        inventario = json.load(arquivo)
+    
+    if not inventario:
+        print("⚠️ O inventário está vazio. Adicione um produto primeiro.")
+    else:
+        print("🗒️ Lista de Produtos no Inventário:")
+        
+        # O loop 'for' continua percorrendo cada item da lista normalmente.
+        for produto in inventario:
+            # Imprimimos os detalhes do produto usando nossa variável de contagem.
+            print(f"\n--- Produto {produto.get('id')} ---")
+            print(f"  Nome: {produto.get('nome_produto', 'N/A')}")
+            print(f"  Preço: R$ {produto.get('preco_unitario', 0):.2f}")
+            print(f"  Quantidade: {produto.get('quantidade', 0)} unidades")
+            print(f"  Disponível em Estoque: {produto.get('em_estoque')}")
+except FileNotFoundError:
+    print("❌ Arquivo 'loja.json' não encontrado. O inventário parece estar vazio.")
+
+print("\n--- Fim da Listagem ---")
