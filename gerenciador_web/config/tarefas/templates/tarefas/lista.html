@@ -12,7 +12,8 @@
     <hr> 
     {% for tarefa in minhas_tarefas %} 
         <div class="tarefa {% if tarefa.concluida %}concluida{% endif %}"> 
-            <h2><a href="{% url 'detalhe_tarefa' tarefa.id %}">{{ tarefa.titulo }}</a></h2>            <p>{{ tarefa.descricao }}</p> 
+            <h2><a href="{% url 'detalhe_tarefa' tarefa.id %}">{{ tarefa.titulo }}</a></h2>            
+            <p>{{ tarefa.descricao }}</p> 
             <small>Criada em: {{ tarefa.data_criacao }}</small> 
         </div> 
     {% empty %} 
