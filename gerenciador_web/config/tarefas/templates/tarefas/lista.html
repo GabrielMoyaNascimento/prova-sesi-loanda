@@ -14,6 +14,7 @@
         <div class="tarefa {% if tarefa.concluida %}concluida{% endif %}"> 
             <h2><a href="{% url 'detalhe_tarefa' tarefa.id %}">{{ tarefa.titulo }}</a></h2>            
             <p>{{ tarefa.descricao }}</p> 
+            <p>Projeto :{{tarefa.projeto.nome}}</p>
             <small>Criada em: {{ tarefa.data_criacao }}</small> 
         </div> 
     {% empty %} 

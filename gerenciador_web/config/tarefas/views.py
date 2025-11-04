@@ -29,24 +29,46 @@ def detalhe_tarefa(request, tarefa_id):
     return render(request, 'tarefas/detalhe.html', {'tarefa': tarefa})
 
 def adicionar_tarefa(request): 
-    # Busca todos os projetos para popular o seletor no formulário 
+    # 1. Busca todos os projetos para popular o seletor.
     projetos = Projeto.objects.all() 
  
     if request.method == 'POST': 
+        # 2. Pega os dados enviados pelo formulário.
         titulo = request.POST.get('titulo') 
         descricao = request.POST.get('descricao') 
-        projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado 
+        projeto_id = request.POST.get('projeto') 
  
-        # Encontra a instância do projeto e a associa à nova tarefa 
-        projeto_selecionado = Projeto.objects.get(pk=projeto_id) 
-        Tarefa.objects.create(titulo=titulo, descricao=descricao, projeto=projeto_selecionado) 
+        # 3. Adiciona a validação do título.
+        if not titulo or titulo.strip() == '':
+            # 3a. Se o título estiver vazio, prepara o contexto de erro.
+            contexto_erro = { 
+                'projetos': projetos, 
+                'erro': 'O campo Título é obrigatório.' 
+            } 
+            return render(request, 'tarefas/form_tarefa.html', contexto_erro, status=400) 
+        # --- FIM DA CORREÇÃO ---
+ 
+        # 4. Se o título for válido, continua o processo normal.
+        try:
+            projeto_selecionado = Projeto.objects.get(pk=projeto_id) 
+        except (Projeto.DoesNotExist, ValueError):
+             # Uma validação extra para o caso do projeto ser inválido
+             contexto_erro = { 
+                'projetos': projetos, 
+                'erro': 'Projeto selecionado é inválido.' 
+            }
+             return render(request, 'tarefas/form_tarefa.html', contexto_erro, status=400)
+
+        Tarefa.objects.create(
+            titulo=titulo, 
+            descricao=descricao, 
+            projeto=projeto_selecionado
+        ) 
  
         return redirect('lista_tarefas') 
  
-    # Envia a lista de projetos para o template 
-    return render(request, 'tarefas/form_tarefa.html', {'projetos': projetos}) 
- 
-# A lógica para alterar_tarefa seria similar, passando também a lista de projetos. 
+    # Se o método for GET, apenas mostra o formulário vazio.
+    return render(request, 'tarefas/form_tarefa.html', {'projetos': projetos})
 
 def alterar_tarefa(request, tarefa_id):
     # 1. Busca a tarefa específica que será editada ou retorna um erro 404 se não existir.
@@ -78,7 +100,6 @@ def alterar_tarefa(request, tarefa_id):
         # 7. Redireciona o usuário para a lista de tarefas após a alteração.
         return redirect('lista_tarefas')
 
-    # 8. Se o método for GET (primeiro acesso à página de edição):
     #    Renderiza o formulário, passando a tarefa para preencher os campos
     #    e a lista de projetos para montar o seletor.
     context = {
